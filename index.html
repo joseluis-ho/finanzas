@@ -54,12 +54,16 @@ button{font:inherit;color:inherit}
 nav.tabs{display:flex;gap:2px}
 nav.tabs button{background:none;border:0;padding:8px 12px;border-radius:9px;color:var(--text2);font-weight:560;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14.5px}
 nav.tabs button svg{width:18px;height:18px;flex:none}
+nav.tabs .lbl-sm{display:none}
 nav.tabs button:hover{background:var(--surface2)}
 nav.tabs button[aria-current="page"]{background:var(--surface2);color:var(--text)}
 main{max-width:1080px;margin:0 auto;padding:18px 16px 48px}
 @media (max-width:760px){
   nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));gap:0;z-index:30}
-  nav.tabs button{flex-direction:column;gap:3px;font-size:11px;padding:6px 2px;flex:1;min-width:0}
+  nav.tabs button{flex-direction:column;gap:3px;font-size:10.5px;padding:6px 1px;flex:1;min-width:0;letter-spacing:-.01em}
+  nav.tabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  nav.tabs .lbl-lg{display:none}
+  nav.tabs .lbl-sm{display:inline}
   nav.tabs button svg{width:22px;height:22px}
   nav.tabs button:hover{background:none}
   nav.tabs button[aria-current="page"]{background:none;color:var(--accent)}
@@ -82,6 +86,7 @@ main{max-width:1080px;margin:0 auto;padding:18px 16px 48px}
 /* KPIs */
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 @media (max-width:760px){.kpis{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.kpis .kpi .value{font-size:18px}.kpis .kpi{padding:10px 12px}.acct .acct-bal{font-size:17px}}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;min-width:0}
 .kpi .label{font-size:13px;color:var(--text2)}
 .kpi .value{font-size:22px;font-weight:680;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -221,6 +226,17 @@ details.steps summary{cursor:pointer;font-weight:600;font-size:14px}
 details.steps ol{padding-left:20px;margin:10px 0 0;display:grid;gap:6px;font-size:14px;color:var(--text2)}
 code.origin{background:var(--surface2);padding:2px 6px;border-radius:6px;font-size:13px;word-break:break-all;color:var(--text)}
 .status-line{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 12px}
+.accts{display:grid;gap:10px}
+.acct{border:1px solid var(--grid);border-radius:12px;padding:12px 14px}
+.acct-top{display:flex;align-items:flex-start;gap:12px}
+.acct-top .main{flex:1;min-width:0}
+.acct-name{font-weight:650;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-bal{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.acct-bal .pct{display:block;font-size:12px;font-weight:560;color:var(--text2)}
+.acct .meter{margin-top:10px}
+.acct-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pos{color:var(--good)}
+.filter{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--baseline);border-radius:9px;background:var(--bg);color:var(--text);min-height:34px;max-width:100%}
 </style>
 </head>
 <body>
@@ -233,9 +249,10 @@ code.origin{background:var(--surface2);padding:2px 6px;border-radius:6px;font-si
     <button class="sync-chip off" id="syncChip" data-action="sync-chip" type="button"><span class="led"></span><span class="txt">Drive</span></button>
     <nav class="tabs" aria-label="Secciones">
       <button data-action="tab" data-tab="mes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Mes</span></button>
+      <button data-action="tab" data-tab="dinero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7V5a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V6"/><path d="M16 14h.01"/></svg><span>Dinero</span></button>
       <button data-action="tab" data-tab="sueldos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 12.5h.01M18 12.5h.01"/></svg><span>Sueldos</span></button>
       <button data-action="tab" data-tab="grafica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Gráfica</span></button>
-      <button data-action="tab" data-tab="inversiones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Inversiones</span></button>
+      <button data-action="tab" data-tab="inversiones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="lbl-lg">Inversiones</span><span class="lbl-sm">Fondos</span></button>
       <button data-action="tab" data-tab="datos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Datos</span></button>
     </nav>
   </div>
@@ -262,11 +279,14 @@ const DEFAULT_CATS = [
    Pega aquí tu ID de cliente de Google (termina en .apps.googleusercontent.com)
    para no tener que introducirlo en cada dispositivo. También puede dejarse vacío
    e introducirse desde la pestaña «Datos». */
-const GOOGLE_CLIENT_ID = '867537987203-2t597q8st9tukp3e84ojtlsp47r3gish.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '';
 const DRIVE_FILE = 'mis-finanzas-datos.json';
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const SYNC_KEY = 'mis-finanzas-sync';
 const EXTRA_TYPES = ['Beca','Ayuda','Regalo','Otro'];
+const ACC_TYPES = [{value:'banco', label:'Banco'}, {value:'efectivo', label:'Efectivo'}, {value:'otra', label:'Otra (tarjeta prepago, hucha…)'}];
+const DEFAULT_ACCOUNTS = [{id:'efectivo', name:'Efectivo', type:'efectivo'}];
+const PREFS_KEY = 'mis-finanzas-prefs';
 const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MONTHS_SHORT = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
@@ -297,6 +317,7 @@ function parseNum(s){
   s = String(s ?? '').trim().replace(/\s|€/g, '');
   if(s === '') return NaN;
   if(s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  else if(/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, ''); // 1.000 = mil
   const n = Number(s);
   return isFinite(n) ? n : NaN;
 }
@@ -318,6 +339,8 @@ function normalize(d){
     extras: Array.isArray(d.extras) ? d.extras : [],
     expenses: Array.isArray(d.expenses) ? d.expenses : [],
     investments: Array.isArray(d.investments) ? d.investments : [],
+    accounts: Array.isArray(d.accounts) ? d.accounts : DEFAULT_ACCOUNTS.map(a => ({...a})),
+    transfers: Array.isArray(d.transfers) ? d.transfers : [],
     fundValues: d.fundValues && typeof d.fundValues === 'object' ? d.fundValues : {},
     deleted: d.deleted && typeof d.deleted === 'object' ? d.deleted : {},
     lastBackup: d.lastBackup || null,
@@ -345,6 +368,8 @@ function mergeData(a, b){
     extras: ml(a.extras, b.extras),
     expenses: ml(a.expenses, b.expenses),
     investments: ml(a.investments, b.investments),
+    accounts: ml(a.accounts || [], b.accounts || []),
+    transfers: ml(a.transfers, b.transfers),
     fundValues: fv, deleted,
     lastBackup: [a.lastBackup, b.lastBackup].filter(Boolean).sort().pop() || null,
   };
@@ -352,7 +377,7 @@ function mergeData(a, b){
 function canon(d){
   const byId = l => [...(l || [])].sort((x, y) => String(x.id).localeCompare(String(y.id)));
   const keys = o => Object.keys(o || {}).sort().map(k => [k, o[k]]);
-  return JSON.stringify([byId(d.categories), byId(d.salaries), byId(d.extras), byId(d.expenses), byId(d.investments), keys(d.fundValues), keys(d.deleted), d.lastBackup]);
+  return JSON.stringify([byId(d.categories), byId(d.salaries), byId(d.extras), byId(d.expenses), byId(d.investments), byId(d.accounts), byId(d.transfers), keys(d.fundValues), keys(d.deleted), d.lastBackup]);
 }
 function load(){
   try { const raw = localStorage.getItem(LS_KEY); if(raw) return normalize(JSON.parse(raw)); } catch(e){}
@@ -369,11 +394,13 @@ function saveLocal(){
 }
 let state = load();
 const ui = { tab: 'mes', month: currentMonth(), range: 12 };
+let prefs = {}; try { prefs = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; } catch(e){}
+function setPref(k, v){ prefs[k] = v; try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch(e){} }
 try { const u = JSON.parse(sessionStorage.getItem('mis-finanzas-ui') || '{}'); if(u.tab) ui.tab = u.tab; if(u.month) ui.month = u.month; if(u.range != null) ui.range = u.range; } catch(e){}
 function saveUI(){ try { sessionStorage.setItem('mis-finanzas-ui', JSON.stringify(ui)); } catch(e){} }
 
 const catById = id => state.categories.find(c => c.id === id);
-const hasData = () => state.salaries.length || state.extras.length || state.expenses.length || state.investments.length;
+const hasData = () => state.salaries.length || state.extras.length || state.expenses.length || state.investments.length || state.transfers.length || state.accounts.some(a => a.ref);
 const sortedSalaries = () => [...state.salaries].sort((a,b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
 
 function monthStats(k){
@@ -409,6 +436,7 @@ function render(){
   const v = $('#view');
   if(ui.tab === 'mes') v.innerHTML = viewMonth();
   else if(ui.tab === 'sueldos') v.innerHTML = viewSalaries();
+  else if(ui.tab === 'dinero') v.innerHTML = viewMoney();
   else if(ui.tab === 'grafica'){ v.innerHTML = viewChart(); drawChart(); }
   else if(ui.tab === 'inversiones') v.innerHTML = viewInvestments();
   else v.innerHTML = viewData();
@@ -451,7 +479,7 @@ function viewMonth(){
 
   const salRows = st.sal.sort((a,b) => a.date.localeCompare(b.date)).map(s => `
     <li class="row" data-action="edit-salary" data-id="${s.id}">
-      <div class="main"><div class="title">Sueldo · ${fmtDate(s.date)}${s.note ? ` <span class="muted small">— ${esc(s.note)}</span>` : ''}</div><div class="meta">${salaryMeta(s)}</div></div>
+      <div class="main"><div class="title">Sueldo · ${fmtDate(s.date)}${s.note ? ` <span class="muted small">— ${esc(s.note)}</span>` : ''}</div><div class="meta">${accLabel(s.accountId, '→ ')}${salaryMeta(s)}</div></div>
       <div class="amt">${eur(s.amount)}</div>
     </li>`).join('');
 
@@ -460,7 +488,7 @@ function viewMonth(){
     <ul class="rows">${st.ext.sort((a,b) => a.date.localeCompare(b.date)).map(x => `
       <li class="row" data-action="edit-extra" data-id="${x.id}">
         <div class="date">${fmtDate(x.date,false)}</div>
-        <div class="main"><div class="title"><span class="badge">${esc(x.type)}</span>${esc(x.concept)}</div></div>
+        <div class="main"><div class="title"><span class="badge">${esc(x.type)}</span>${esc(x.concept)}</div>${x.accountId ? `<div class="meta">→ ${esc(accName(x.accountId))}</div>` : ''}</div>
         <div class="amt">${eur(x.amount)}</div>
       </li>`).join('')}</ul>` : `
     <div style="margin-top:14px"><button class="btn dashed" data-action="add-extra">+ Añadir ingresos extraordinarios a este mes <span class="muted small">(becas, ayudas, regalos…)</span></button></div>`;
@@ -476,7 +504,7 @@ function viewMonth(){
     return `<li class="row" data-action="edit-expense" data-id="${e.id}">
       <div class="date">${fmtDate(e.date,false)}</div>
       <span class="dot" style="background:var(--s${c ? c.color : 7})"></span>
-      <div class="main"><div class="title">${esc(e.concept)}</div><div class="meta">${esc(c ? c.name : 'Sin categoría')}</div></div>
+      <div class="main"><div class="title">${esc(e.concept)}</div><div class="meta">${esc(c ? c.name : 'Sin categoría')}${e.accountId ? ' · ' + esc(accName(e.accountId)) : ''}</div></div>
       <div class="amt">${eur(e.amount)}</div></li>`;
   }).join('');
 
@@ -787,7 +815,7 @@ function fieldHtml(f, values){
   const req = f.required ? 'required' : '';
   let input;
   if(f.type === 'date') input = `<input type="date" id="${id}" name="${f.name}" value="${esc(v || '')}" ${req}>`;
-  else if(f.type === 'select') input = `<select id="${id}" name="${f.name}" ${req}>${f.options.map(o => `<option value="${esc(o.value)}" ${o.value === v ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select>`;
+  else if(f.type === 'select') input = `<select id="${id}" name="${f.name}" ${req}>${f.options.map(o => `<option value="${esc(o.value)}" ${o.value === (v ?? '') ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select>`;
   else if(f.type === 'money' || f.type === 'decimal') input = `<input type="text" inputmode="decimal" autocomplete="off" id="${id}" name="${f.name}" value="${esc(numToInput(v))}" placeholder="${f.placeholder || '0,00'}" ${req}>`;
   else input = `<input type="text" id="${id}" name="${f.name}" value="${esc(v || '')}" placeholder="${esc(f.placeholder || '')}" ${f.list ? `list="${id}_list"` : ''} autocomplete="off" maxlength="80" ${req}>${f.list ? `<datalist id="${id}_list">${f.list.map(o => `<option value="${esc(o)}">`).join('')}</datalist>` : ''}`;
   return `<div class="field"><label for="${id}">${esc(f.label)}${f.required ? '' : ' <span class="muted">(opcional)</span>'}</label>${input}${f.hint ? `<span class="hint">${f.hint}</span>` : ''}</div>`;
@@ -811,7 +839,7 @@ function openForm({title, fields, values = {}, onSave, onDelete, submitLabel = '
       let v = el.value.trim();
       if(f.type === 'money' || f.type === 'decimal'){
         if(v === ''){ if(f.required){ err = `Indica «${f.label}».`; break; } v = null; }
-        else { const n = parseNum(v); if(!isFinite(n) || n < 0 || (f.positive && n === 0)){ err = `Revisa el importe de «${f.label}».`; break; } v = f.type === 'money' ? Math.round(n * 100) / 100 : n; }
+        else { const n = parseNum(v); if(!isFinite(n) || (n < 0 && !f.negative) || (f.positive && n === 0)){ err = `Revisa el importe de «${f.label}».`; break; } v = f.type === 'money' ? Math.round(n * 100) / 100 : n; }
       } else if(f.required && !v){ err = `Completa «${f.label}».`; break; }
       out[f.name] = v;
     }
@@ -846,11 +874,13 @@ function formSalary(item){
     fields: [
       {name:'date', label:'Día de cobro', type:'date', required:true},
       {name:'amount', label:'Importe neto (€)', type:'money', required:true, positive:true},
+      accField('Cuenta donde lo recibes'),
       {name:'note', label:'Nota', type:'text', placeholder:'p. ej. incluye paga extra'},
     ],
-    values: item || {date: defaultDate()},
+    values: item || {date: defaultDate(), accountId: defaultAcc('lastIncAcc')},
     onSave: v => {
-      if(item) Object.assign(item, v, {u: now()}); else state.salaries.push({id: uid(), ...v, u: now()});
+      setPref('lastIncAcc', v.accountId);
+      if(item) Object.assign(item, v, {u: now()}); else state.salaries.push({id: uid(), ...v, u: now(), c: now()});
       afterSave(v.date, item ? 'Sueldo actualizado' : 'Sueldo añadido');
     },
     onDelete: item ? () => { state.salaries = state.salaries.filter(x => x.id !== item.id); tomb(item.id); save(); render(); toast('Sueldo eliminado'); } : null,
@@ -864,10 +894,12 @@ function formExtra(item){
       {name:'concept', label:'Concepto', type:'text', required:true, placeholder:'p. ej. Beca de movilidad'},
       {name:'date', label:'Fecha', type:'date', required:true},
       {name:'amount', label:'Importe (€)', type:'money', required:true, positive:true},
+      accField('Cuenta donde lo recibes'),
     ],
-    values: item || {date: defaultDate(), type: 'Beca'},
+    values: item || {date: defaultDate(), type: 'Beca', accountId: defaultAcc('lastIncAcc')},
     onSave: v => {
-      if(item) Object.assign(item, v, {u: now()}); else state.extras.push({id: uid(), ...v, u: now()});
+      setPref('lastIncAcc', v.accountId);
+      if(item) Object.assign(item, v, {u: now()}); else state.extras.push({id: uid(), ...v, u: now(), c: now()});
       afterSave(v.date, item ? 'Ingreso actualizado' : 'Ingreso extraordinario añadido');
     },
     onDelete: item ? () => { state.extras = state.extras.filter(x => x.id !== item.id); tomb(item.id); save(); render(); toast('Ingreso eliminado'); } : null,
@@ -882,11 +914,12 @@ function formExpense(item){
       {name:'concept', label:'Concepto', type:'text', required:true, placeholder:'p. ej. Repsol autovía, cena cumpleaños…', list: concepts},
       {name:'date', label:'Fecha', type:'date', required:true},
       {name:'amount', label:'Importe (€)', type:'money', required:true, positive:true},
+      accField('Pagado con'),
     ],
-    values: item || {date: defaultDate(), catId: ui.lastCat || state.categories[0].id},
+    values: item || {date: defaultDate(), catId: (catById(prefs.lastCat) ? prefs.lastCat : state.categories[0].id), accountId: defaultAcc('lastExpAcc')},
     onSave: v => {
-      ui.lastCat = v.catId;
-      if(item) Object.assign(item, v, {u: now()}); else state.expenses.push({id: uid(), ...v, u: now()});
+      setPref('lastCat', v.catId); setPref('lastExpAcc', v.accountId);
+      if(item) Object.assign(item, v, {u: now()}); else state.expenses.push({id: uid(), ...v, u: now(), c: now()});
       afterSave(v.date, item ? 'Gasto actualizado' : 'Gasto añadido');
     },
     onDelete: item ? () => { state.expenses = state.expenses.filter(x => x.id !== item.id); tomb(item.id); save(); render(); toast('Gasto eliminado'); } : null,
@@ -901,11 +934,13 @@ function formInvestment(item){
       {name:'date', label:'Fecha de compra', type:'date', required:true},
       {name:'amount', label:'Precio de compra (€ invertidos)', type:'money', required:true, positive:true},
       {name:'units', label:'Participaciones', type:'decimal', placeholder:'p. ej. 12,3456', hint:'Si las indicas, luego podrás actualizar el valor con el valor liquidativo.'},
+      accField('Pagado desde', 'No descontar de ninguna cuenta'),
       {name:'note', label:'Nota', type:'text', placeholder:'p. ej. aportación periódica'},
     ],
-    values: item || {date: todayISO()},
+    values: item || {date: todayISO(), accountId: prefs.lastInvAcc && accById(prefs.lastInvAcc) ? prefs.lastInvAcc : ''},
     onSave: v => {
-      if(item) Object.assign(item, v, {u: now()}); else state.investments.push({id: uid(), ...v, u: now()});
+      setPref('lastInvAcc', v.accountId);
+      if(item) Object.assign(item, v, {u: now()}); else state.investments.push({id: uid(), ...v, u: now(), c: now()});
       save(); render(); toast(item ? 'Compra actualizada' : 'Compra añadida');
     },
     onDelete: item ? () => { state.investments = state.investments.filter(x => x.id !== item.id); tomb(item.id); save(); render(); toast('Compra eliminada'); } : null,
@@ -933,6 +968,183 @@ function formFundValue(fund){
   });
 }
 
+/* ============ Cuentas y dinero disponible ============ */
+const accById = id => (state.accounts || []).find(a => a.id === id);
+const accName = id => { const a = accById(id); return a ? a.name : 'Cuenta eliminada'; };
+const accLabel = (id, prefix = '') => id ? `${prefix}${esc(accName(id))}<br>` : '';
+const accTypeLabel = t => ({banco:'Banco', efectivo:'Efectivo', otra:'Otra'}[t] || 'Cuenta');
+function sortedAccounts(){ const order = {banco:0, otra:1, efectivo:2}; return [...state.accounts].sort((a,b) => (order[a.type] ?? 3) - (order[b.type] ?? 3) || a.name.localeCompare(b.name)); }
+function defaultAcc(pref){
+  if(prefs[pref] !== undefined && (prefs[pref] === '' || accById(prefs[pref]))) return prefs[pref];
+  const bank = sortedAccounts().find(a => a.type === 'banco');
+  return bank ? bank.id : (state.accounts[0] ? state.accounts[0].id : '');
+}
+function accField(label, noneLabel = 'Sin indicar'){
+  return {name:'accountId', label, type:'select', options: [...sortedAccounts().map(a => ({value:a.id, label: a.name + (a.type === 'efectivo' ? '' : ' · ' + accTypeLabel(a.type))})), {value:'', label: noneLabel}],
+          hint: state.accounts.length <= 1 ? 'Puedes añadir tus bancos en la pestaña «Dinero».' : ''};
+}
+/* Todos los movimientos que afectan a una cuenta, con signo */
+function allMovements(){
+  const out = [];
+  state.salaries.forEach(x => x.accountId && out.push({acc:x.accountId, date:x.date, c:x.c, amount:x.amount, label:'Sueldo', sub:x.note, kind:'salary', id:x.id}));
+  state.extras.forEach(x => x.accountId && out.push({acc:x.accountId, date:x.date, c:x.c, amount:x.amount, label:x.concept, sub:x.type, kind:'extra', id:x.id}));
+  state.expenses.forEach(x => x.accountId && out.push({acc:x.accountId, date:x.date, c:x.c, amount:-x.amount, label:x.concept, sub:catById(x.catId)?.name, kind:'expense', id:x.id}));
+  state.investments.forEach(x => x.accountId && out.push({acc:x.accountId, date:x.date, c:x.c, amount:-x.amount, label:'Compra: ' + x.fund, sub:'Inversión', kind:'inv', id:x.id}));
+  state.transfers.forEach(x => {
+    out.push({acc:x.from, date:x.date, c:x.c, amount:-x.amount, label:x.concept || 'Traspaso', sub:'Traspaso a ' + accName(x.to), kind:'transfer', id:x.id});
+    out.push({acc:x.to, date:x.date, c:x.c, amount:x.amount, label:x.concept || 'Traspaso', sub:'Traspaso desde ' + accName(x.from), kind:'transfer', id:x.id});
+  });
+  return out;
+}
+/* ¿El movimiento cuenta para el saldo, dado el último saldo real indicado? */
+function afterRef(acc, m){
+  const r = acc.ref; if(!r) return true;
+  if(m.date !== r.date) return m.date > r.date;
+  return (m.c || 0) > (r.t || 0);
+}
+function accountBalances(){
+  const t = todayISO(), mk = currentMonth();
+  const movs = allMovements();
+  return sortedAccounts().map(a => {
+    const mine = movs.filter(m => m.acc === a.id && afterRef(a, m));
+    const past = mine.filter(m => m.date <= t), future = mine.filter(m => m.date > t);
+    const base = a.ref ? a.ref.amount : 0;
+    const balance = base + past.reduce((s, m) => s + m.amount, 0);
+    const monthIn = movs.filter(m => m.acc === a.id && m.date.startsWith(mk) && m.amount > 0).reduce((s, m) => s + m.amount, 0);
+    const monthOut = movs.filter(m => m.acc === a.id && m.date.startsWith(mk) && m.amount < 0).reduce((s, m) => s - m.amount, 0);
+    const used = movs.some(m => m.acc === a.id);
+    return {a, balance, forecast: future.length ? balance + future.reduce((s, m) => s + m.amount, 0) : null, monthIn, monthOut, used};
+  });
+}
+function viewMoney(){
+  const rows = accountBalances();
+  const total = rows.reduce((s, r) => s + r.balance, 0);
+  const banks = rows.filter(r => r.a.type === 'banco').reduce((s, r) => s + r.balance, 0);
+  const cash = rows.filter(r => r.a.type === 'efectivo').reduce((s, r) => s + r.balance, 0);
+  const inv = fundSummary().reduce((s, f) => s + (f.value != null ? f.value : f.invested), 0);
+  const positive = rows.reduce((s, r) => s + Math.max(0, r.balance), 0);
+  const cards = rows.map(({a, balance, forecast, monthIn, monthOut, used}) => {
+    const share = positive > 0 && balance > 0 ? balance / positive * 100 : 0;
+    return `<div class="acct">
+      <div class="acct-top">
+        <div class="main"><div class="acct-name">${esc(a.name)}</div>
+          <div class="small muted"><span class="badge">${accTypeLabel(a.type)}</span>${a.ref ? `saldo real ${eur(a.ref.amount)} el ${fmtDate(a.ref.date, a.ref.date.slice(0,4) !== todayISO().slice(0,4))}` : 'sin saldo inicial'}</div></div>
+        <div class="acct-bal ${balance < 0 ? 'bad' : ''}">${eur(balance)}<span class="pct">${share ? pct(share) + ' del total' : ''}</span></div>
+      </div>
+      <div class="meter"><i style="width:${share}%;background:var(--accent)"></i></div>
+      <div class="small" style="margin-top:8px;color:var(--text2)">Este mes: <span class="pos">+${eur(monthIn)}</span> · −${eur(monthOut)}${forecast != null ? ` · Previsto con movimientos futuros: <b>${eur(forecast)}</b>` : ''}</div>
+      <div class="acct-actions">
+        <button class="btn small" data-action="acc-ref" data-id="${a.id}">Actualizar saldo</button>
+        <button class="btn small" data-action="acc-edit" data-id="${a.id}">Editar</button>
+      </div>
+    </div>`;
+  }).join('');
+  const filter = ui.accFilter && accById(ui.accFilter) ? ui.accFilter : '';
+  const movs = allMovements().filter(m => !filter || m.acc === filter)
+    .filter(m => !(m.kind === 'transfer' && !filter && m.amount > 0))
+    .sort((x, y) => y.date.localeCompare(x.date) || (y.c || 0) - (x.c || 0));
+  const limit = ui.movLimit || 25;
+  const more = movs.length > limit;
+  movs.length = Math.min(movs.length, limit);
+  const movRows = movs.map(m => {
+    const amt = m.kind === 'transfer' && !filter ? Math.abs(m.amount) : m.amount;
+    const act = {salary:'edit-salary', extra:'edit-extra', expense:'edit-expense', inv:'edit-inv', transfer:'edit-transfer'}[m.kind];
+    const where = m.kind === 'transfer' && !filter ? `${esc(accName(m.acc))} → ${esc(m.sub.replace('Traspaso a ', ''))}` : `${m.sub ? esc(m.sub) + ' · ' : ''}${esc(accName(m.acc))}`;
+    return `<li class="row" data-action="${act}" data-id="${m.id}">
+      <div class="date">${fmtDate(m.date, false)}</div>
+      <div class="main"><div class="title">${esc(m.label)}</div><div class="meta">${where}</div></div>
+      <div class="amt ${m.kind === 'transfer' && !filter ? '' : amt > 0 ? 'pos' : ''}">${m.kind === 'transfer' && !filter ? '⇄ ' + eur(amt) : (amt > 0 ? '+' : '−') + eur(Math.abs(amt))}</div></li>`;
+  }).join('');
+  const unassigned = [...state.salaries, ...state.extras, ...state.expenses].filter(x => !x.accountId).length;
+  return `<div class="stack">
+    <div class="kpis">
+      ${kpi('Dinero disponible', eur(total), 'bancos + efectivo + otras', total < 0 ? 'bad' : '')}
+      ${kpi('En bancos', eur(banks))}
+      ${kpi('En efectivo', eur(cash))}
+      ${kpi('Patrimonio', eur(total + inv), `incluye ${eur(inv)} en inversiones`)}
+    </div>
+    <section class="card">
+      <div class="card-head"><h2>Cuentas</h2>
+        <button class="btn small" data-action="add-transfer" ${state.accounts.length < 2 ? 'disabled title="Necesitas al menos dos cuentas"' : ''}>⇄ Traspaso</button>
+        <button class="btn small primary" data-action="acc-add">+ Cuenta</button></div>
+      <div class="accts">${cards || '<div class="empty">Añade tu primera cuenta.</div>'}</div>
+      <p class="note">El saldo de cada cuenta parte del <b>saldo real</b> que indiques y le suma los ingresos y le resta los gastos, compras de fondos y traspasos que apuntes en ella. Si en algún momento no cuadra con tu banco, pulsa «Actualizar saldo» y pon lo que te marca.</p>
+      ${unassigned ? `<p class="note">Hay ${unassigned} movimientos sin cuenta asignada; no afectan a ningún saldo.</p>` : ''}
+    </section>
+    <section class="card">
+      <div class="card-head"><h2>Movimientos</h2>
+        <select class="filter" data-acc-filter aria-label="Filtrar por cuenta"><option value="">Todas las cuentas</option>${sortedAccounts().map(a => `<option value="${a.id}" ${a.id === filter ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select></div>
+      ${movRows ? `<ul class="rows">${movRows}</ul>${more ? '<div style="margin-top:10px"><button class="btn dashed" data-action="mov-more">Ver más movimientos</button></div>' : ''}` : '<div class="empty">Aún no hay movimientos asignados a cuentas. Al añadir un sueldo, ingreso o gasto, elige la cuenta.</div>'}
+    </section>
+  </div>`;
+}
+function refFields(label = 'Saldo real (€)'){
+  return [
+    {name:'amount', label, type:'money', required:true, negative:true, placeholder:'lo que te marca el banco'},
+    {name:'date', label:'A fecha de', type:'date', required:true, hint:'Si es hoy, se sumarán los movimientos que apuntes a partir de ahora. Si es un día anterior, se toma como el saldo al empezar ese día.'},
+  ];
+}
+const makeRef = v => ({amount: v.amount, date: v.date, t: v.date === todayISO() ? now() : 0});
+function formAccount(item){
+  if(item){
+    const used = accountBalances().find(r => r.a.id === item.id)?.used;
+    openForm({
+      title: 'Editar cuenta',
+      fields: [{name:'name', label:'Nombre', type:'text', required:true}, {name:'type', label:'Tipo', type:'select', required:true, options: ACC_TYPES}],
+      values: item,
+      onSave: v => {
+        if(state.accounts.some(a => a.id !== item.id && a.name.toLowerCase() === v.name.toLowerCase())) return 'Ya tienes una cuenta con ese nombre.';
+        Object.assign(item, v, {u: now()}); save(); render(); toast('Cuenta actualizada');
+      },
+      onDelete: used ? null : () => { state.accounts = state.accounts.filter(a => a.id !== item.id); tomb(item.id); save(); render(); toast('Cuenta eliminada'); },
+    });
+    return;
+  }
+  openForm({
+    title: 'Nueva cuenta',
+    intro: 'Por ejemplo tu banco (Santander, BBVA, ING…), una cuenta de ahorro o el efectivo que llevas encima.',
+    fields: [{name:'name', label:'Nombre', type:'text', required:true, placeholder:'p. ej. BBVA nómina'}, {name:'type', label:'Tipo', type:'select', required:true, options: ACC_TYPES}, ...refFields('Saldo actual (€)')],
+    values: {type:'banco', date: todayISO()},
+    onSave: v => {
+      if(state.accounts.some(a => a.name.toLowerCase() === v.name.toLowerCase())) return 'Ya tienes una cuenta con ese nombre.';
+      state.accounts.push({id: 'a' + uid(), name: v.name, type: v.type, ref: makeRef(v), u: now()});
+      save(); render(); toast('Cuenta añadida');
+    },
+  });
+}
+function formAccountRef(acc){
+  const cur = accountBalances().find(r => r.a.id === acc.id);
+  openForm({
+    title: 'Actualizar saldo · ' + acc.name,
+    intro: `Ahora la web calcula ${eur(cur ? cur.balance : 0)}. Escribe lo que te marca de verdad ${acc.type === 'efectivo' ? 'la cartera' : 'el banco'} y se usará como nuevo punto de partida.`,
+    fields: refFields(),
+    values: {amount: cur ? cur.balance : 0, date: todayISO()},
+    onSave: v => { acc.ref = makeRef(v); acc.u = now(); save(); render(); toast('Saldo actualizado'); },
+  });
+}
+function formTransfer(item){
+  const opts = sortedAccounts().map(a => ({value:a.id, label:a.name}));
+  const accs = sortedAccounts();
+  openForm({
+    title: item ? 'Editar traspaso' : 'Traspaso entre cuentas',
+    intro: 'Para mover dinero entre tus cuentas, por ejemplo sacar efectivo del cajero o pasar dinero a la cuenta de ahorro. No cuenta como gasto ni como ingreso.',
+    fields: [
+      {name:'from', label:'Desde', type:'select', required:true, options: opts},
+      {name:'to', label:'Hacia', type:'select', required:true, options: opts},
+      {name:'amount', label:'Importe (€)', type:'money', required:true, positive:true},
+      {name:'date', label:'Fecha', type:'date', required:true},
+      {name:'concept', label:'Concepto', type:'text', placeholder:'p. ej. Cajero'},
+    ],
+    values: item || {date: todayISO(), from: (accs.find(a => a.type === 'banco') || accs[0] || {}).id, to: (accs.find(a => a.type === 'efectivo') || accs[1] || {}).id},
+    onSave: v => {
+      if(v.from === v.to) return 'Elige dos cuentas distintas.';
+      if(item) Object.assign(item, v, {u: now()}); else state.transfers.push({id: uid(), ...v, u: now(), c: now()});
+      save(); render(); toast(item ? 'Traspaso actualizado' : 'Traspaso añadido');
+    },
+    onDelete: item ? () => { state.transfers = state.transfers.filter(x => x.id !== item.id); tomb(item.id); save(); render(); toast('Traspaso eliminado'); } : null,
+  });
+}
+
 /* ============ Datos: exportar / importar ============ */
 function download(name, content, type){
   const blob = new Blob([content], {type});
@@ -950,11 +1162,13 @@ function exportJSON(){
 function exportCSV(){
   const n = v => String(v ?? '').replace('.', ',');
   const q = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
-  const lines = [['Tipo','Fecha','Categoría','Concepto','Importe','Participaciones'].join(';')];
-  state.salaries.forEach(s => lines.push(['Sueldo', s.date, '', q(s.note), n(s.amount), ''].join(';')));
-  state.extras.forEach(s => lines.push(['Ingreso extraordinario', s.date, q(s.type), q(s.concept), n(s.amount), ''].join(';')));
-  state.expenses.forEach(s => lines.push(['Gasto', s.date, q(catById(s.catId)?.name), q(s.concept), n(-s.amount), ''].join(';')));
-  state.investments.forEach(s => lines.push(['Inversión', s.date, q(s.fund), q(s.note), n(s.amount), n(s.units)].join(';')));
+  const an = id => q(id ? accName(id) : '');
+  const lines = [['Tipo','Fecha','Categoría','Concepto','Importe','Participaciones','Cuenta'].join(';')];
+  state.salaries.forEach(s => lines.push(['Sueldo', s.date, '', q(s.note), n(s.amount), '', an(s.accountId)].join(';')));
+  state.extras.forEach(s => lines.push(['Ingreso extraordinario', s.date, q(s.type), q(s.concept), n(s.amount), '', an(s.accountId)].join(';')));
+  state.expenses.forEach(s => lines.push(['Gasto', s.date, q(catById(s.catId)?.name), q(s.concept), n(-s.amount), '', an(s.accountId)].join(';')));
+  state.investments.forEach(s => lines.push(['Inversión', s.date, q(s.fund), q(s.note), n(s.amount), n(s.units), an(s.accountId)].join(';')));
+  state.transfers.forEach(s => lines.push(['Traspaso', s.date, '', q(s.concept), n(s.amount), '', q(accName(s.from) + ' → ' + accName(s.to))].join(';')));
   const head = lines.shift();
   lines.sort((a,b) => a.split(';')[1].localeCompare(b.split(';')[1]));
   download(`mis-finanzas-${todayISO()}.csv`, '﻿' + [head, ...lines].join('\r\n'), 'text/csv;charset=utf-8');
@@ -981,27 +1195,35 @@ function loadSample(){
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const cur = currentMonth(); const t = todayISO();
   const s = normalize({});
+  const start = `${shiftMonth(cur, -6)}-01`;
+  s.accounts = [
+    {id:'efectivo', name:'Efectivo', type:'efectivo', ref:{amount:40, date:start, t:0}},
+    {id:'a-banco-ej', name:'Banco principal', type:'banco', ref:{amount:1800, date:start, t:0}},
+    {id:'a-ahorro-ej', name:'Cuenta de ahorro', type:'banco', ref:{amount:3000, date:start, t:0}},
+  ];
   for(let i = 6; i >= 0; i--){
     const k = shiftMonth(cur, -i);
     const payDay = 26 + Math.floor(rnd() * 3);
     const payDate = `${k}-${pad(payDay)}`;
-    if(payDate <= t) s.salaries.push({id: uid(), date: payDate, amount: 1650 + (i === 3 ? 1650 : 0), note: i === 3 ? 'Incluye paga extra' : ''});
-    const add = (cat, concept, lo, hi, day) => { const d = `${k}-${pad(day)}`; if(d <= t) s.expenses.push({id: uid(), date: d, catId: cat, concept, amount: Math.round((lo + rnd() * (hi - lo)) * 100) / 100}); };
+    if(payDate <= t) s.salaries.push({id: uid(), date: payDate, amount: 1650 + (i === 3 ? 1650 : 0), note: i === 3 ? 'Incluye paga extra' : '', accountId:'a-banco-ej'});
+    const add = (cat, concept, lo, hi, day, acc = 'a-banco-ej') => { const d = `${k}-${pad(day)}`; if(d <= t) s.expenses.push({id: uid(), date: d, catId: cat, concept, amount: Math.round((lo + rnd() * (hi - lo)) * 100) / 100, accountId: acc}); };
+    if(`${k}-10` <= t) s.transfers.push({id: uid(), date: `${k}-10`, from:'a-banco-ej', to:'efectivo', amount: 60, concept:'Cajero'});
+    if(`${k}-28` <= t && i > 0) s.transfers.push({id: uid(), date: `${k}-28`, from:'a-banco-ej', to:'a-ahorro-ej', amount: 300, concept:'Ahorro mensual'});
     add('gimnasio', 'Cuota mensual', 39.9, 39.9, 2);
     add('gasolina', 'Repsol', 45, 60, 5); add('gasolina', 'Cepsa', 40, 58, 19);
-    add('comidas', 'Cena con amigos', 25, 45, 9); add('comidas', 'Menú del día', 11, 14, 14); add('comidas', 'Tapas', 15, 30, 23);
+    add('comidas', 'Cena con amigos', 25, 45, 9); add('comidas', 'Menú del día', 11, 14, 14, 'efectivo'); add('comidas', 'Tapas', 15, 30, 23, 'efectivo');
     if(rnd() > .5) add('regalos', 'Cumpleaños', 20, 60, 12);
     if(i === 2) add('viajes', 'Vuelos Lisboa', 140, 180, 16);
     if(i === 2) add('viajes', 'Hotel Lisboa', 180, 220, 17);
   }
-  s.extras.push({id: uid(), date: `${shiftMonth(cur, -4)}-15`, type: 'Beca', concept: 'Beca de investigación', amount: 600});
-  s.extras.push({id: uid(), date: `${shiftMonth(cur, -1)}-08`, type: 'Regalo', concept: 'Regalo de cumpleaños', amount: 150});
-  s.investments.push({id: uid(), date: `${shiftMonth(cur, -6)}-03`, fund: 'Fondo indexado MSCI World', amount: 2000, units: 10.6, note: ''});
-  s.investments.push({id: uid(), date: `${shiftMonth(cur, -3)}-03`, fund: 'Fondo indexado MSCI World', amount: 500, units: 2.5, note: 'Aportación'});
-  s.investments.push({id: uid(), date: `${shiftMonth(cur, -5)}-10`, fund: 'Fondo renta fija corto plazo', amount: 1500, units: 14.2, note: ''});
+  s.extras.push({id: uid(), date: `${shiftMonth(cur, -4)}-15`, type: 'Beca', concept: 'Beca de investigación', amount: 600, accountId:'a-banco-ej'});
+  s.extras.push({id: uid(), date: `${shiftMonth(cur, -1)}-08`, type: 'Regalo', concept: 'Regalo de cumpleaños', amount: 150, accountId:'efectivo'});
+  s.investments.push({id: uid(), date: `${shiftMonth(cur, -6)}-03`, fund: 'Fondo indexado MSCI World', amount: 2000, units: 10.6, note: '', accountId:'a-ahorro-ej'});
+  s.investments.push({id: uid(), date: `${shiftMonth(cur, -3)}-03`, fund: 'Fondo indexado MSCI World', amount: 500, units: 2.5, note: 'Aportación', accountId:'a-banco-ej'});
+  s.investments.push({id: uid(), date: `${shiftMonth(cur, -5)}-10`, fund: 'Fondo renta fija corto plazo', amount: 1500, units: 14.2, note: '', accountId:'a-ahorro-ej'});
   s.fundValues['Fondo indexado MSCI World'] = {value: 2690.4, date: t};
   s.fundValues['Fondo renta fija corto plazo'] = {value: 1531.2, date: t};
-  const t0 = now(); [...s.salaries, ...s.extras, ...s.expenses, ...s.investments].forEach(x => x.u = t0);
+  const t0 = now(); [...s.salaries, ...s.extras, ...s.expenses, ...s.investments, ...s.transfers, ...s.accounts].forEach(x => { x.u = t0; x.c = 1; });
   Object.values(s.fundValues).forEach(v => v.u = t0);
   s.deleted = state.deleted;
   state = normalize(mergeData(s, state)); save(); ui.month = cur; render(); toast('Datos de ejemplo cargados');
@@ -1196,6 +1418,12 @@ document.addEventListener('click', e => {
     case 'add-inv': formInvestment(); break;
     case 'edit-inv': formInvestment(state.investments.find(x => x.id === id)); break;
     case 'fund-value': formFundValue(t.dataset.fund); break;
+    case 'acc-add': formAccount(); break;
+    case 'acc-edit': formAccount(accById(id)); break;
+    case 'acc-ref': formAccountRef(accById(id)); break;
+    case 'add-transfer': formTransfer(); break;
+    case 'mov-more': ui.movLimit = (ui.movLimit || 25) + 50; render(); break;
+    case 'edit-transfer': formTransfer(state.transfers.find(x => x.id === id)); break;
     case 'range': ui.range = +t.dataset.range; render(); break;
     case 'export-json': exportJSON(); break;
     case 'export-csv': exportCSV(); break;
@@ -1216,11 +1444,12 @@ document.addEventListener('click', e => {
       break;
     }
     case 'clear-client-id': sync.clientId = ''; saveSync(); tokenClient = null; render(); break;
-    case 'reset': openConfirm('Borrar todos los datos', 'Se eliminarán sueldos, gastos, ingresos extraordinarios e inversiones (también de Google Drive y tus otros dispositivos si tienes la sincronización activada). <b>No se puede deshacer.</b> Si quieres, exporta antes una copia.', 'Borrar todo', () => {
+    case 'reset': openConfirm('Borrar todos los datos', 'Se eliminarán sueldos, gastos, ingresos extraordinarios, cuentas, traspasos e inversiones (también de Google Drive y tus otros dispositivos si tienes la sincronización activada). <b>No se puede deshacer.</b> Si quieres, exporta antes una copia.', 'Borrar todo', () => {
       const t = now(), del = {...state.deleted};
-      [...state.salaries, ...state.extras, ...state.expenses, ...state.investments, ...state.categories].forEach(x => del[x.id] = t);
+      [...state.salaries, ...state.extras, ...state.expenses, ...state.investments, ...state.categories, ...state.accounts, ...state.transfers].forEach(x => del[x.id] = t);
       state = normalize({});
       state.categories.forEach(c => c.u = t + 1);
+      state.accounts.forEach(a => a.u = t + 1);
       state.deleted = del;
       save(); render(); toast('Datos borrados');
     }); break;
@@ -1242,6 +1471,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('change', e => {
+  if(e.target.matches && e.target.matches('[data-acc-filter]')){ ui.accFilter = e.target.value; ui.movLimit = 25; render(); return; }
   const id = e.target.dataset && e.target.dataset.catRename;
   if(id){ const c = catById(id); const v = e.target.value.trim(); if(c && v){ c.name = v; c.u = now(); save(); toast('Categoría renombrada'); } else if(c) e.target.value = c.name; }
 });
